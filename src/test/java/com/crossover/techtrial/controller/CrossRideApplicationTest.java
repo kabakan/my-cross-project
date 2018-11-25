@@ -22,6 +22,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -54,9 +56,10 @@ public class CrossRideApplicationTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
+    private RideServiceImpl mock = org.mockito.Mockito.mock(RideServiceImpl.class);
+
     @Test
     public void testCreateNewRide() throws Exception {
-        RideServiceImpl rideService = new RideServiceImpl();
         Ride ride = new Ride();
         ride.setId(1L);
         ride.setDistance(200.0);
@@ -70,7 +73,7 @@ public class CrossRideApplicationTest {
         ride.setDriver(person);
         ride.setRider(person);
 
-        when(rideService.save(ride)).thenReturn(new Ride());
+        when(mock.save(ride)).thenReturn(ride);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/ride/createNewRide")
                 .content(asJsonString(ride))
@@ -81,21 +84,22 @@ public class CrossRideApplicationTest {
 
     @Test
     public void testGetRide() throws Exception {
-        RideServiceImpl rideService = new RideServiceImpl();
-        when(rideService.findById(1L)).thenReturn(new Ride());
+        Ride ride = new Ride();
+        when(mock.findById(1L)).thenReturn(ride);
+
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/api/ride/getRide?rideId={rideId}"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.rideId", is(1)))
+                .andExpect(jsonPath("$.rideId", is(1L)))
                 .andDo(print());
     }
 
     @Test
     public void testGetTopRides() throws Exception {
-        RideServiceImpl rideService = new RideServiceImpl();
-        when(rideService.getTopDriver(LocalDateTime.now().plusHours(24).plusMinutes(20), LocalDateTime.now()))
-                .thenReturn(new ArrayList<TopDriverDTO>());
+        List<TopDriverDTO> topDriverDTOS = new ArrayList<TopDriverDTO>();
+        when(mock.getTopDriver(LocalDateTime.now().plusHours(24).plusMinutes(20), LocalDateTime.now()))
+                .thenReturn(topDriverDTOS);
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/api/ride/getTopRides"))
                 .andExpect(status().isOk())

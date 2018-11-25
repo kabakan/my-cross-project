@@ -35,64 +35,70 @@ public class RideServiceImpl implements RideService {
     }
 
     public Ride findById(Long rideId) {
-        Optional<Ride> optionalRide = rideRepository.findById(rideId);
-        if (optionalRide.isPresent()) {
+        try {
+            Optional<Ride> optionalRide = rideRepository.findById(rideId);
             return optionalRide.get();
-        } else return null;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public List<TopDriverDTO> getTopDriver(LocalDateTime startTime, LocalDateTime endTime) {
         Integer id = 0;
         List<TopDriverDTO> listTopDriverDTO = new ArrayList<>();
-        for (Person pers : personRepository.findAll()) {
-            List<Ride> rides = rideRepository.getTopRides(pers.getName(), startTime, endTime);
+        try {
+            for (Person pers : personRepository.findAll()) {
+                List<Ride> rides = rideRepository.getTopRides(pers.getName(), startTime, endTime);
 
-            id = 0;
-            HashMap<Integer, Double> distance = new HashMap<>();
-            for (Ride ride : rides) {
-                id = +1;
-                distance.put(id, ride.getDistance());
+                id = 0;
+                HashMap<Integer, Double> distance = new HashMap<>();
+                for (Ride ride : rides) {
+                    id = +1;
+                    distance.put(id, ride.getDistance());
+                }
+
+                //get average Distance
+                Double distanceAVG = getAVG(distance);
+
+                id = 0;
+                HashMap<Integer, Double> times = new HashMap<>();
+                for (Ride ride : rides) {
+                    id = +1;
+                    times.put(id, Double.parseDouble(ride.getStartTime()) + Double.parseDouble(ride.getEndTime()));
+                }
+
+                id = 1;
+                Integer maxKey = Collections.max(times.entrySet(), Map.Entry.comparingByValue()).getKey();
+                getFreeTime(times, id, maxKey);
+
+                //get max summ free time
+                Double maxValue = Collections.max(free.entrySet(), Map.Entry.comparingByValue()).getValue();
+
+                //get count summ free time
+                Double countValue = free.values().stream().mapToDouble(i -> i).sum();
+
+                TopDriverDTO topDriverDTO = new TopDriverDTO();
+                topDriverDTO.setName(pers.getName());
+                topDriverDTO.setEmail(pers.getEmail());
+                topDriverDTO.setAverageDistance(distanceAVG);
+                topDriverDTO.setMaxRideDurationInSecods(Math.round(maxValue));
+                topDriverDTO.setTotalRideDurationInSeconds(Math.round(countValue));
+                listTopDriverDTO.add(topDriverDTO);
             }
 
-            //get average Distance
-            Double distanceAVG = getAVG(distance);
+            //Sorted AverageDistance for TOP
+            Collections.sort(listTopDriverDTO, new Comparator<TopDriverDTO>() {
+                public int compare(TopDriverDTO c1, TopDriverDTO c2) {
+                    if (c1.getAverageDistance() > c2.getAverageDistance()) return -1;
+                    if (c1.getAverageDistance() > c2.getAverageDistance()) return 1;
+                    return 0;
+                }
+            });
 
-            id = 0;
-            HashMap<Integer, Double> times = new HashMap<>();
-            for (Ride ride : rides) {
-                id = +1;
-                times.put(id, Double.parseDouble(ride.getStartTime()) + Double.parseDouble(ride.getEndTime()));
-            }
-
-            id = 1;
-            Integer maxKey = Collections.max(times.entrySet(), Map.Entry.comparingByValue()).getKey();
-            getFreeTime(times, id, maxKey);
-
-            //get max summ free time
-            Double maxValue = Collections.max(free.entrySet(), Map.Entry.comparingByValue()).getValue();
-
-            //get count summ free time
-            Double countValue = free.values().stream().mapToDouble(i -> i).sum();
-
-            TopDriverDTO topDriverDTO = new TopDriverDTO();
-            topDriverDTO.setName(pers.getName());
-            topDriverDTO.setEmail(pers.getEmail());
-            topDriverDTO.setAverageDistance(distanceAVG);
-            topDriverDTO.setMaxRideDurationInSecods(Math.round(maxValue));
-            topDriverDTO.setTotalRideDurationInSeconds(Math.round(countValue));
-            listTopDriverDTO.add(topDriverDTO);
+            return listTopDriverDTO;
+        } catch (Exception ex) {
+            return null;
         }
-
-        //Sorted AverageDistance for TOP
-        Collections.sort(listTopDriverDTO, new Comparator<TopDriverDTO>() {
-            public int compare(TopDriverDTO c1, TopDriverDTO c2) {
-                if (c1.getAverageDistance() > c2.getAverageDistance()) return -1;
-                if (c1.getAverageDistance() > c2.getAverageDistance()) return 1;
-                return 0;
-            }
-        });
-
-        return listTopDriverDTO;
     }
 
     public void getFreeTime(HashMap<Integer, Double> times, Integer id, Integer max) {
