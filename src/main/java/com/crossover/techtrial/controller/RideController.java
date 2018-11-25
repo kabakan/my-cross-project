@@ -63,8 +63,8 @@ public class RideController {
 
     for (TopDriverDTO topDriverDTO : rideService.getTopDriver(startTime,endTime)) {
       next =+1;
-      if (next.equals(count)) {break;}
       topDrivers.add(topDriverDTO);
+      if (next.equals(count)) {break;}
     }
 
     return ResponseEntity.ok(topDrivers);
