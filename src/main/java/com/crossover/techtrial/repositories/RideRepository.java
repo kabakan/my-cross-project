@@ -23,6 +23,6 @@ public interface RideRepository extends CrudRepository<Ride, Long> {
             "from ride r, person p " +
             "where r.ride_id = p.id " +
             "and p.name = :name " +
-            "and r.start_time >= :startTime and r.end_time <= :startTime")
+            "and r.start_time >= :startTime and r.end_time <= :endTime")
     List<Ride> getTopRides(@Param("name") String name, @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
 }
