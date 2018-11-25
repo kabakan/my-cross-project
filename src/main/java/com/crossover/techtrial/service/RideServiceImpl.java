@@ -100,7 +100,7 @@ public class RideServiceImpl implements RideService {
         Double d2 = times.get(id + 1);
         Double d3 = d1 - d2;
         free.put(id, d3);
-        getFreeTime(times, id, max);
+        getFreeTime(times, id+1, max);
     }
 
     public static Double getAVG(HashMap<Integer, Double> distance) {

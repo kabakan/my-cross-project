@@ -696,9 +696,9 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="width" value="1933" />
-    <option name="height" value="1038" />
+    <option name="x" value="-9" />
+    <option name="width" value="1934" />
+    <option name="height" value="1039" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -856,7 +856,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543093261097" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../PROJECTS/GIT/telco-api-uz" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
