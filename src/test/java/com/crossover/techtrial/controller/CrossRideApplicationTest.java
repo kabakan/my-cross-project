@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.crossover.techtrial;
+package com.crossover.techtrial.controller;
 
 import com.crossover.techtrial.controller.RideController;
 import com.crossover.techtrial.dto.TopDriverDTO;
