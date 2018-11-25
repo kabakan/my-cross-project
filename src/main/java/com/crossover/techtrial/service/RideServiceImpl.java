@@ -47,6 +47,7 @@ public class RideServiceImpl implements RideService {
         for (Person pers : personRepository.findAll()) {
             List<Ride> rides = rideRepository.getTopRides(pers.getName(), startTime, endTime);
 
+            id = 0;
             HashMap<Integer, Double> distance = new HashMap<>();
             for (Ride ride : rides) {
                 id = +1;
@@ -56,12 +57,14 @@ public class RideServiceImpl implements RideService {
             //get average Distance
             Double distanceAVG = getAVG(distance);
 
+            id = 0;
             HashMap<Integer, Double> times = new HashMap<>();
             for (Ride ride : rides) {
                 id = +1;
                 times.put(id, Double.parseDouble(ride.getStartTime()) + Double.parseDouble(ride.getEndTime()));
             }
-            id = 0;
+
+            id = 1;
             Integer maxKey = Collections.max(times.entrySet(), Map.Entry.comparingByValue()).getKey();
             getFreeTime(times, id, maxKey);
 
